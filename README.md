@@ -10,7 +10,7 @@
 
 ## 🚀 Live Demo
 You can try the live application here:  
-🔗 https://begadelashry-portfolio.vercel.app/
+🔗 https://deepguard-deepfakedetection.streamlit.app/
 
 ---
 

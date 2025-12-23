@@ -35,19 +35,46 @@ with col2:
     if file2:
         st.image(file2, caption="Image B", use_container_width=True)
 
-# زر التحليل
+# زر التحليل المطور
 if file1 and file2:
-    if st.button("Detect Fake Image"):
-        img1 = Image.open(file1).convert('RGB')
-        img2 = Image.open(file2).convert('RGB')
-        
-        score1 = process_and_predict(img1)
-        score2 = process_and_predict(img2)
-        
-        st.divider()
-        if score1 > score2:
-            st.error(f"⚠️ **Result:** Image A is likely the FAKE (Score: {score1:.2%})")
-            st.success(f"✅ **Result:** Image B is likely REAL (Score: {score2:.2%})")
-        else:
-            st.error(f"⚠️ **Result:** Image B is likely the FAKE (Score: {score2:.2%})")
-            st.success(f"✅ **Result:** Image A is likely REAL (Score: {score1:.2%})")
+    if st.button("🚀 Start Deep Analysis"):
+        with st.spinner('Analyzing facial patterns...'):
+            img1 = Image.open(file1).convert('RGB')
+            img2 = Image.open(file2).convert('RGB')
+            
+            # الحصول على النتائج
+            score1 = process_and_predict(img1)
+            score2 = process_and_predict(img2)
+            
+            st.divider()
+            
+            # حساب الفرق بين الصورتين (Margin)
+            diff = abs(score1 - score2)
+            
+            # حالة 1: لو الصورتين قريبين جداً من بعض (نتيجة غير حاسمة)
+            if diff < 0.10: 
+                st.warning(f"⚠️ **Inconclusive Result:** Both images have very similar patterns (Diff: {diff:.2%}). It's hard to distinguish which one is manipulated.")
+            
+            # حالة 2: مقارنة واضحة
+            
+            col_res1, col_res2 = st.columns(2)
+            
+            if score1 > score2:
+                with col_res1:
+                    st.error(f"🚨 **IMAGE A: FAKE**")
+                    st.metric(label="Fake Probability", value=f"{score1:.2%}", delta="High Risk")
+                with col_res2:
+                    st.success(f"✅ **IMAGE B: REAL**")
+                    st.metric(label="Fake Probability", value=f"{score2:.2%}", delta="-Low Risk", delta_color="normal")
+            elif score2 == score1:
+                st.info("ℹ️ **Both images have identical fake probabilities. they might be the same image or equally manipulated.**")
+            else:
+                with col_res1:
+                    st.success(f"✅ **IMAGE A: REAL**")
+                    st.metric(label="Fake Probability", value=f"{score1:.2%}", delta="-Low Risk", delta_color="normal")
+                with col_res2:
+                    st.error(f"🚨 **IMAGE B: FAKE**")
+                    st.metric(label="Fake Probability", value=f"{score2:.2%}", delta="High Risk")
+
+            # نصيحة تقنية للمستخدم
+            st.info("💡 **AI Insight:** The model focuses on skin texture inconsistencies and eye-light reflection patterns.")

@@ -28,12 +28,12 @@ col1, col2 = st.columns(2)
 with col1:
     file1 = st.file_uploader("Upload Image A", type=['jpg', 'jpeg', 'png'])
     if file1:
-        st.image(file1, caption="Image A", use_container_width=True)
+        st.image(file1, caption="Image A", width='stretch')
 
 with col2:
     file2 = st.file_uploader("Upload Image B", type=['jpg', 'jpeg', 'png'])
     if file2:
-        st.image(file2, caption="Image B", use_container_width=True)
+        st.image(file2, caption="Image B", width='stretch')
 
 # زر التحليل المطور
 if file1 and file2:
